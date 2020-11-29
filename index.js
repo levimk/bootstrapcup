@@ -9,15 +9,16 @@ const express = require('express');
 //Creates our express server
 const app = express();
 
-// const stripe = require('./myStripe');
+const stripe = require('./myStripe');
 
 
 //Serves static files (we need it to import a css file)
 app.use(express.static('public'))
 
 //Sets a basic route
-app.get('/', (req, res) => {
-  console.log(config.stripeSecretKey);
+app.get('/', async (req, res) => {
+  const accounts = await stripe.accounts.list({limit: 3});
+  console.log(accounts);
   res.send('Hello Hotload!')
 });
 
