@@ -6,5 +6,4 @@ if (process.env.NODE_ENV == 'production') {
 } else {
   configToUse = './dev';
 }
-console.log(`Using: ${configToUse}`);
 module.exports = require(configToUse);
