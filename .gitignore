@@ -104,4 +104,4 @@ dist
 .tern-port
 
 # Dev configuration files
-./config/dev.js
+config/dev.js
