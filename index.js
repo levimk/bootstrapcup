@@ -32,19 +32,15 @@ app.use(auth(config.authConfig));
 app.use(express.static('public'))
 
 
-app.get('/', (req, res) => {
-  res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
-})
+// app.get('/', (req, res) => {
+//   res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
+// })
 
-const { requiresAuth } = require('express-openid-connect');
+const profile = require('./routes/profileRoutes');
+app.use('/profile', profile);
 
-app.get('/profile', requiresAuth(), (req, res) => {
-  res.send(JSON.stringify(req.oidc.user));
-});
-
-
-// const home = require('./routes/homeRoutes');
-// app.use('/', home);
+const home = require('./routes/homeRoutes');
+app.use('/', home);
 
 const accounts = require('./routes/usersRoutes');
 app.use('/accounts', accounts);
