@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const stripe = require('../utils/configuredStripe');
+const usersController = require('../controllers/usersController');
 
 router.get('/', async (req, res, next) => {
   let accounts = await stripe.accounts.list({limit: 3});

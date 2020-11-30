@@ -1,14 +1,18 @@
-const _ = require('lodash');
-
+const config = require('./config');
 const dotenv = require('dotenv');
 dotenv.config();
-const config = require('./config');
 
+// Auth0
+const { auth } = require('express-openid-connect');
+
+// Mongoose
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/', {
+  useNewUrlParser: true
+})
 
 //Loads the express module
 const express = require('express');
-
-//Creates our express server
 const app = express();
 
 const hbs = require('express-handlebars');
@@ -22,14 +26,27 @@ app.engine('hbs', hbs({
 }))
 
 
+app.use(auth(config.authConfig));
+
 //Serves static files (we need it to import a css file)
 app.use(express.static('public'))
 
 
-const home = require('./routes/home');
-app.use('/', home);
+app.get('/', (req, res) => {
+  res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
+})
 
-const accounts = require('./routes/accounts');
+const { requiresAuth } = require('express-openid-connect');
+
+app.get('/profile', requiresAuth(), (req, res) => {
+  res.send(JSON.stringify(req.oidc.user));
+});
+
+
+// const home = require('./routes/homeRoutes');
+// app.use('/', home);
+
+const accounts = require('./routes/usersRoutes');
 app.use('/accounts', accounts);
 
 //Makes the app listen to port 3000
